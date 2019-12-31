@@ -48,7 +48,7 @@ Bastnaesite group,Resource,Ground
 Bauxite,Resource,Ground
 Bazzite,Resource,Ground
 Bentonite,Resource,Ground
-Bertradndite,Resource,Ground
+Bertrandite,Resource,Ground
 Beryl,Resource,Ground
 Beryllium ore,Resource,Ground
 Bismuth ore,Resource,Ground
@@ -72,6 +72,8 @@ Caesium ore,Resource,Ground
 Calaverite,Resource,Ground
 Calcio-olivine,Resource,Ground
 Calcite,Resource,Ground
+Calcium carbonate,Emission,Water
+Calcium carbonate,Emission,Ground
 Calcium carbonate,Resource,Ground
 Calcium chloride,Resource,Ground
 Calcium fluoride,Resource,Ground
@@ -81,7 +83,7 @@ Calderite,Resource,Ground
 Caliche,Resource,Ground
 Carbon dioxide,Resource,Air
 Carnallite,Resource,Ground
-Carnotite,Resource,Ground
+Carnotite,Resource,Water
 Cassiterite,Resource,Ground
 Celestine,Resource,Ground
 Celsian,Resource,Ground
@@ -467,3 +469,23 @@ Amphiboles,Emission,Water
 Asbestos,Emission,Air
 Asbestos,Emission,Water
 Asbestos,Emission,Ground
+Zeolites,Emission,Ground
+Titanium oxide,Resource,Ground
+Titanium dioxide,Resource,Ground
+Uranium oxide,Resource,Ground
+Barite,Emission,Water
+Bauxite,Emission,Water
+Bauxite,Emission,Ground
+Bauxite,Emission,Air
+Borate,Emission,Water
+Bromate,Emission,Air
+Bromide,Emission,Air
+Crude oil,Emission,Air
+Crude oil,Emission,Water
+Crude oil,Emission,Ground
+Helium,Emission,Air
+Hydrogen,Emission,Air
+Hydrogen,Emission,Water
+Nitratine,Emission,Air
+Soil,Emission,Water
+Zeolites,Resource,Ground
