@@ -6,9 +6,10 @@ flowlist.py.
 """
 
 import pandas as pd
-from fedelemflowlist.globals import inputpath, as_path, log, flow_list_specs
+from esupy.util import as_path
+from fedelemflowlist.globals import inputpath, flow_list_specs
 
-contexts = pd.read_csv(inputpath + 'Contexts.csv', na_values='N/A')
+contexts = pd.read_csv(inputpath / 'Contexts.csv', na_values='N/A')
 
 # Get levels for max number of compartment classes
 max_compartment_classes = len(contexts.columns)
@@ -32,7 +33,7 @@ context_patterns = []
 context_list_na_removed = list()
 for index, row in contexts.iterrows():
     pattern = [compartment_classes[x] for x in range(0, max_compartment_classes)
-               if str(row[x]) != 'nan']
+               if str(row.iloc[x]) != 'nan']
     pattern = ','.join(pattern)
     context_patterns.append(pattern)
     row_list = row.values

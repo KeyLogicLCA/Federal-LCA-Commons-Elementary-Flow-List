@@ -58,6 +58,9 @@ Bismutite,Resource,Ground
 Boehmite,Resource,Ground
 Borate,Resource,Ground
 Borax,Resource,Ground
+Borax,Emission,Air
+Borax,Emission,Ground
+Borax,Emission,Water
 Bornite,Resource,Ground
 Boron ore,Resource,Ground
 Bowieite,Resource,Ground
@@ -115,7 +118,7 @@ Colemanite,Resource,Ground
 Columbite (Fe),Resource,Ground
 Columbite (Mn),Resource,Ground
 Columbite group,Resource,Ground
-Copper (I) sufide,Resource,Ground
+Copper (I) sulfide,Resource,Ground
 Copper ore,Resource,Ground
 Copper sulfides,Resource,Ground
 Corderoite,Resource,Ground
@@ -196,8 +199,8 @@ Huebnerite,Resource,Ground
 Hyalophane,Resource,Ground
 Hydrogen,Resource,Air
 Hydroxylapatite,Resource,Ground
-Hydroxylbastnaesite (Ce) ,Resource,Ground
-Hydroxylbastnaesite (Nd) ,Resource,Ground
+Hydroxylbastnaesite (Ce),Resource,Ground
+Hydroxylbastnaesite (Nd),Resource,Ground
 Ilmenite,Resource,Ground
 Indium (III) sulfide,Resource,Ground
 Indium ore,Resource,Ground
@@ -414,7 +417,7 @@ Tetrahedrite,Resource,Ground
 Thalcusite,Resource,Ground
 Thallium ore,Resource,Ground
 Thenardite,Resource,Ground
-Thorbastnaesite ,Resource,Ground
+Thorbastnaesite,Resource,Ground
 Thorianite,Resource,Ground
 Thorite,Resource,Ground
 Thorium ore,Resource,Ground
@@ -478,7 +481,7 @@ Hydrogen,Emission,Water
 Nitratine,Emission,Air
 Soil,Emission,Water
 Zeolites,Resource,Ground
-Dysporium,Resource,Ground
+Dysprosium,Resource,Ground
 Sodium carbonate,Emission,Air
 Sodium carbonate,Emission,Ground
 Sodium carbonate,Emission,Water

@@ -31,6 +31,32 @@ class TestInputFiles(unittest.TestCase):
                 log.debug('duplicate flowables in '+ c_)
                 duplicates = duplicates + class_duplicates
         self.assertTrue(duplicates==0,'Duplicate flowables')
+
+    def test_duplicate_flow_primary_contexts(self):
+        """For each flow class, tests for duplicate primary contexts."""
+        duplicates = 0
+        for c_ in flow_list_specs["flow_classes"]:
+            primarycontexts = read_in_flowclass_file(c_, "FlowablePrimaryContexts")
+            contexts_in_class = primarycontexts[['Flowable','Directionality',
+                                                   'Environmental Media']].drop_duplicates()
+            class_duplicates = len(primarycontexts.index) - len(contexts_in_class)
+            if class_duplicates > 0:
+                log.debug('duplicate primary contexts in '+ c_)
+                duplicates = duplicates + class_duplicates
+        self.assertTrue(duplicates==0,'Duplicate primary contexts')
+
+    def test_flowables_across_classes(self):
+        """Test that flowables are not present in multiple classes."""
+        flowables = pd.DataFrame()
+        for c_ in flow_list_specs["flow_classes"]:
+            flowables_in_class = read_in_flowclass_file(c_, "Flowables")
+            flowables = pd.concat([flowables, flowables_in_class],
+                                  ignore_index=True)
+        flowables_in_flowables = set(flowables['Flowable'])
+        duplicates = len(flowables.index) - len(flowables_in_flowables)
+        if duplicates > 0:
+            log.debug(str(duplicates) + ' duplicate flowables across classes')
+        self.assertTrue(duplicates==0,'Duplicate flowables')
         
     def test_altunit_files_match_flowables(self):
         """For each flow class, test flowables in AltUnits are defined in Flowables."""
@@ -54,7 +80,7 @@ class TestInputFiles(unittest.TestCase):
 
     def test_units_are_olcaunits(self):
         """Test that units are openlca reference units."""
-        import olca.units as olcaunits
+        import olca_schema.units as olcaunits
         
         for c_ in flow_list_specs["flow_classes"]:
             flowables = read_in_flowclass_file(c_, "Flowables")
@@ -77,7 +103,6 @@ class TestInputFiles(unittest.TestCase):
                     self.assertIsNotNone(olcaref)
             except FileNotFoundError:
                 altunits_for_class = None
-
 
     def test_compartment_classes_match(self):
         """

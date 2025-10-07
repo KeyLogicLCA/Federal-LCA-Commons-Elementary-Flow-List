@@ -1,26 +1,40 @@
+# __init__.py (fedelemflowlist)
+# !/usr/bin/env python3
+# coding=utf-8
 """fedelemflowlist
 
 Allows retrieval of the Federal LCA Commons flow list and mapping files
 in standard pandas dataframe formats, defined within format specs
 """
-import os
+
+from pathlib import Path
 import pandas as pd
 from fedelemflowlist.flowlist import read_in_flowclass_file
-from fedelemflowlist.globals import outputpath, flowmappingpath, flow_list_specs
+from fedelemflowlist.globals import flowmappingpath, flow_list_specs,\
+    log, load_flowlist
 import fedelemflowlist.jsonld as jsonld
+from fedelemflowlist.subset_list import subsets
+import fedelemflowlist.subset_list as subset_list
 
-
-def get_flows(preferred_only=None):
+def get_flows(preferred_only=False, subset=None, download_if_missing=True):
     """Gets a flow list in a standard format
 
     Returns the full master flow list unless preferred flows is lists
-    :param preferred_only:
+    :param preferred_only: Boolean for whether preferred flows are desired or not
+    :param subset: str, a possible subset of flows
+    :param download_if_missing: bool, False to force local generation,
+        True to download from remote if not found locally
     :return: standard Flow List dataframe
     """
-    list_file = outputpath + 'FedElemFlowListMaster.parquet'
-    flows = pd.read_parquet(list_file)
+    flows = load_flowlist(download_if_missing=download_if_missing)
     if preferred_only:
         flows = flows[flows['Preferred'] == 1]
+    if subset is not None:
+        try:
+            flows = getattr(subset_list,subsets[subset])(flows)
+        except KeyError:
+            log.error(f'Subset {subset} not found.')
+            flows = None
     return flows
 
 
@@ -35,26 +49,24 @@ def get_flowmapping(source=None):
     """
     flowmappings = pd.DataFrame()
     if source is not None:
-        if type(source).__name__ == 'str':
+        if isinstance(source, str):
             source = [source]
         for f in source:
-            mapping_file = flowmappingpath+f+'.csv'
+            mapping_file = flowmappingpath / f'{f}.csv'
             try:
                 flowmapping = pd.read_csv(mapping_file, header=0)
                 flowmappings = pd.concat([flowmappings, flowmapping])
             except FileNotFoundError:
-                print("No mapping file found for " + str(f))
+                log.warn(f'No mapping file found for {f}')
     else:
-        # load all mappings in directory
-        files = os.listdir(flowmappingpath)
-        for name in files:
-            if name.endswith(".csv"):
-                flowmapping = pd.read_csv(flowmappingpath+name, header=0)
+        for name in flowmappingpath.iterdir():
+            if name.suffix == '.csv':
+                flowmapping = pd.read_csv(flowmappingpath / name, header=0)
                 flowmappings = pd.concat([flowmappings, flowmapping])
     return flowmappings
 
 
-def write_jsonld(flows, path, mappings=None):
+def write_jsonld(flows, path: Path, mappings=None, **kwargs):
     """ Writes a standard openLCA JSON-LD zip archive with elementary flows and optionally
      flowmappings
 
@@ -64,7 +76,7 @@ def write_jsonld(flows, path, mappings=None):
     :return: writes out .zip file
     """
     writer = jsonld.Writer(flow_list=flows, flow_mapping=mappings)
-    writer.write_to(path)
+    writer.write_to(path, zw=kwargs.get('zw'))
 
 def get_alt_conversion():
     """returns a dataframe of all flowables with altunits and alt conversion factors
@@ -77,12 +89,14 @@ def get_alt_conversion():
             altflowlist = pd.concat([altflowlist,altunits_for_class],ignore_index=True)
         except FileNotFoundError:
             altunits_for_class = None # Do nothing
-    altflowlist = altflowlist.drop(columns=['External Reference'])
-    altflowlist = altflowlist.rename(columns={'Conversion Factor': 'AltUnitConversionFactor',
-                                                                    'Alternate Unit': 'AltUnit',
-                                                                    'Reference Unit': 'Unit'})
-    #generate InverseConversionFactor for converting from alt unit to primary unit
+    altflowlist = (altflowlist
+                   .drop(columns=['External Reference'])
+                   .rename(columns={'Conversion Factor': 'AltUnitConversionFactor',
+                                    'Alternate Unit': 'AltUnit',
+                                    'Reference Unit': 'Unit'})
+                   )
+    # generate InverseConversionFactor for converting from alt unit to primary unit
     altflowlist['InverseConversionFactor']=1/altflowlist['AltUnitConversionFactor']
-    #round to 6 decimals
+    # round to 6 decimals
     altflowlist = altflowlist.round({'InverseConversionFactor':6})
     return altflowlist
